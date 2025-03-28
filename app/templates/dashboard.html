@@ -1,10 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Dashboard - SPM{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card bg-orange text-white p-3">
+            <h5><i class="fas fa-heartbeat"></i> Frecuencia Cardíaca</h5>
+            <p id="current-hr">{{ biometrics.heart_rate if biometrics else 'N/A' }} BPM</p>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card p-3">
+            <h5>Próximos entrenamientos</h5>
+            <ul class="list-group">
+                {% for training in trainings %}
+                <li class="list-group-item">
+                    {{ training.date.strftime('%d/%m %H:%M') }} - {{ training.type }}
+                </li>
+                {% else %}
+                <li class="list-group-item">No hay entrenamientos programados</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <h5>Actividad Reciente</h5>
+            <canvas id="activityChart" height="100"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Configuración básica para gráficos
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                datasets: [{
+                    label: 'Frecuencia Cardíaca',
+                    data: [65, 70, 72, 68, 75, 80, 78],
+                    borderColor: '#ff6600',
+                    fill: false
+                }]
+            }
+        });
+    });
+</script>
+{% endblock %}
